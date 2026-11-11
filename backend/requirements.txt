@@ -1,0 +1,23 @@
+# ---- Web framework ---------------------------------------------------------
+flask>=3.0,<4
+flask-cors>=4.0
+
+# ---- AI / computer vision ---------------------------------------------------
+# Torch: CPU wheels install with the plain command below. For a CUDA GPU use
+# the matching wheel from https://pytorch.org/get-started/locally/ e.g.:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+torch>=2.0.0
+torchvision>=0.15.0
+ultralytics>=8.2.0
+opencv-python>=4.8.0
+numpy>=1.24,<3
+
+# ---- Utilities ---------------------------------------------------------------
+PyYAML>=6.0
+pymongo>=4.6
+
+# ---- Production server -------------------------------------------------------
+gunicorn>=21.2
+
+# ---- Development / tests -----------------------------------------------------
+pytest>=8.0

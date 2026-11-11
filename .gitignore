@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+.pytest_cache/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/*.local
+
+# Model weights are downloaded from Google Colab after training (not committed)
+backend/models/*.pt
+backend/models/*.pth
+backend/models/midas_cache/
+
+# Runtime artifacts
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/outputs/*
+!backend/outputs/.gitkeep
+backend/app.log
+backend/*.log
+backend/users.db
+backend/data/
+
+# Misc
+.DS_Store
+wandb/
+runs/

@@ -1,0 +1,65 @@
+# ADAS YOLO training configuration (Google Colab / local)
+# Mirrors the exact arguments used by model_training/train_yolo.py
+# and documented in model_training/README.md.
+
+# ---------------------------------------------------------------- dataset ---
+# Produced by bdd100k_to_yolo.py — paths as they exist inside the Colab VM.
+data: /content/datasets/bdd100k/data.yaml
+dataset: BDD100K (detection labels, 10 classes)
+classes:
+  0: person
+  1: rider
+  2: car
+  3: bus
+  4: truck
+  5: bike
+  6: motor
+  7: traffic light
+  8: traffic sign
+  9: train
+
+# ----------------------------------------------------------------- model ----
+model: yolov8s.pt        # COCO-pretrained start point (transfer learning)
+task: detect
+
+# --------------------------------------------------------------- training ---
+epochs: 50
+imgsz: 640
+batch: 16
+optimizer: auto
+lr0: 0.01
+lrf: 0.01
+momentum: 0.937
+weight_decay: 0.0005
+patience: 20             # early stopping
+seed: 0
+device: "0"              # Colab GPU; set "cpu" for CPU training
+
+# ------------------------------------------------------------- augmentation --
+ hsv_h: 0.015
+ hsv_s: 0.7
+ hsv_v: 0.4
+ degrees: 0.0
+ translate: 0.1
+ scale: 0.5
+ flipud: 0.0
+ fliplr: 0.5
+ mosaic: 1.0
+ mixup: 0.0
+
+# ----------------------------------------------------------------- output ---
+project: bdd100k_yolo
+name: adas_v1
+# After training copy to the website project:
+#   backend/models/best.pt
+#   backend/models/results.csv
+#   backend/models/args.yaml
+
+# ------------------------------------------------------- lane comparison ----
+# Trained separately by train_lane_enet.py (binary lane segmentation):
+lane_seg:
+  architecture: ENet (services/deep_lane_service.py)
+  input_size: [512, 288]
+  classes: 1             # sigmoid lane probability
+  loss: BCEWithLogitsLoss
+  output_checkpoint: backend/models/lane_seg_enet.pth

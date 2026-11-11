@@ -1,0 +1,58 @@
+# ==========================================================================
+#  Render Blueprint — AI-Based Autonomous Driving System
+#
+#  Deploys a single Python web service that:
+#    1. Builds the React frontend (frontend/dist)
+#    2. Installs Python + ML dependencies (torch, ultralytics, opencv)
+#    3. Serves both the REST API (/api/*) and the dashboard (/) on one port
+#
+#  Prerequisites:
+#    • Push this repo to GitHub / GitLab first, then create a Blueprint
+#      deployment in Render pointing to this repo.
+#    • Create a free MongoDB Atlas cluster (M0) and set the ADAS_MONGO_URI
+#      environment variable below to your Atlas connection string.
+#    • (Optional) Place your trained best.pt in backend/models/ if you want
+#      AI inference to work immediately.
+#
+#  After deploy: open https://<service-name>.onrender.com
+# ==========================================================================
+
+services:
+  - type: web
+    name: adas-autonomous-driving
+    runtime: python
+    # Free tier: 512 MB RAM, spins down after 15 min idle.
+    # Upgrade to 'starter' ($7/mo, no spin-down) or 'standard' (2 GB RAM) for
+    # heavier ML inference (torch loads ~500 MB of RAM by itself).
+    plan: free
+    region: oregon
+
+    # ---------------------------------------------------------------- build --
+    # Installs system libs for OpenCV, builds the React frontend, then
+    # installs the Python + ML dependencies.
+    buildCommand: "bash render-build.sh"
+
+    # ----------------------------------------------------------------- start --
+    # Gunicorn serves the Flask app which also serves the built React SPA.
+    startCommand: "gunicorn --chdir backend app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --access-logfile - --error-logfile -"
+
+    # -------------------------------------------------------------- health ---
+    healthCheckPath: /api/health
+
+    # -------------------------------------------------------- env variables --
+    envVars:
+      # MongoDB Atlas connection string — SET THIS MANUALLY in the Render
+      # dashboard (do not commit secrets).  Format:
+      #   mongodb+srv://<user>:<password>@<cluster>.mongodb.net/adas_database
+      - key: ADAS_MONGO_URI
+        sync: false
+      - key: ADAS_MONGO_DB
+        value: adas_database
+      - key: ADAS_CORS_ORIGINS
+        value: "*"
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      # ADAS_FRONTEND_DIST is intentionally NOT set here — config.py defaults to
+      # <repo-root>/frontend/dist which is correct on Render after the build.
+
+    autoDeploy: true
