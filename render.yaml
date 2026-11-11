@@ -9,8 +9,9 @@
 #  Prerequisites:
 #    • Push this repo to GitHub / GitLab first, then create a Blueprint
 #      deployment in Render pointing to this repo.
-#    • Create a free MongoDB Atlas cluster (M0) and set the ADAS_MONGO_URI
-#      environment variable below to your Atlas connection string.
+#    • (Optional) MongoDB Atlas — if ADAS_MONGO_URI is not set the app
+#      automatically falls back to SQLite for user authentication, so a
+#      cloud database is NOT required to deploy.
 #    • (Optional) Place your trained best.pt in backend/models/ if you want
 #      AI inference to work immediately.
 #
@@ -41,8 +42,9 @@ services:
 
     # -------------------------------------------------------- env variables --
     envVars:
-      # MongoDB Atlas connection string — SET THIS MANUALLY in the Render
-      # dashboard (do not commit secrets).  Format:
+      # MongoDB Atlas connection string (optional).  If not set, the app
+      # automatically uses SQLite (backend/users.db) for authentication.
+      # To use MongoDB Atlas, set this to your Atlas connection string:
       #   mongodb+srv://<user>:<password>@<cluster>.mongodb.net/adas_database
       - key: ADAS_MONGO_URI
         sync: false
