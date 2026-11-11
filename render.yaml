@@ -42,9 +42,9 @@ services:
 
     # -------------------------------------------------------- env variables --
     envVars:
-      # MongoDB Atlas connection string (optional).  If not set, the app
-      # automatically uses SQLite (backend/users.db) for authentication.
-      # To use MongoDB Atlas, set this to your Atlas connection string:
+      # MongoDB Atlas connection string — REQUIRED.
+      # Create a free M0 cluster at https://www.mongodb.com/atlas
+      # then set this to your Atlas connection string:
       #   mongodb+srv://<user>:<password>@<cluster>.mongodb.net/adas_database
       - key: ADAS_MONGO_URI
         sync: false
